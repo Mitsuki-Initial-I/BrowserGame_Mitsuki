@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>クリックゲーム</title>
+  <style>
+    #gameCanvas {
+      border: 1px solid black;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="score">Score: 0</div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const context = canvas.getContext('2d');
+
+    let score = 0;
+
+    // ゲームの初期化
+    function init() {
+      canvas.addEventListener('click', handleClick);
+    }
+
+    // クリック時の処理
+    function handleClick(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // ボールをクリックしたか判定
+      if (x >= 100 && x <= 300 && y >= 100 && y <= 300) {
+        score++;
+        updateScore();
+      }
+    }
+
+    // スコアの更新
+    function updateScore() {
+      const scoreElement = document.getElementById('score');
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    // ゲームの描画
+    function draw() {
+      // 背景を描画
+      context.fillStyle = 'lightgray';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      // ボールを描画
+      context.fillStyle = 'blue';
+      context.beginPath();
+      context.arc(200, 200, 100, 0, Math.PI * 2);
+      context.fill();
+    }
+
+    // ゲームのメインループ
+    function gameLoop() {
+      draw();
+    }
+
+    // ページが読み込まれた時にゲームを開始する
+    window.onload = function() {
+      init();
+      updateScore();
+      setInterval(gameLoop, 16); // 60FPSの場合は約16msごとに更新
+    };
+  </script>
+</body>
+</html>
