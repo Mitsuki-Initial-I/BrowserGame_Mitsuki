@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>的当てゲーム</title>
+  <style>
+    #gameCanvas {
+      border: 1px solid black;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="score">Score: 0</div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const context = canvas.getContext('2d');
+
+    let score = 0;
+    let targetX = 200; // 的の初期位置
+
+    // ゲームの初期化
+    function init() {
+      canvas.addEventListener('click', handleClick);
+    }
+
+    // クリック時の処理
+    function handleClick(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // 的をクリックしたか判定
+      if (x >= targetX - 50 && x <= targetX + 50 && y >= 100 && y <= 300) {
+        score++;
+        updateScore();
+        draw();
+      }
+    }
+
+    // スコアの更新
+    function updateScore() {
+      const scoreElement = document.getElementById('score');
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    // 的の移動
+    function moveTarget() {
+      targetX += 5; // 的を右に5ピクセル移動させる
+      if (targetX > canvas.width + 50) {
+        targetX = -50; // 右端に到達したら左端に戻す
+      }
+    }
+
+    // ゲームの描画
+    function draw() {
+      // 背景を描画
+      context.fillStyle = 'lightgray';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 的を描画
+      context.fillStyle = 'red';
+      context.beginPath();
+      context.arc(targetX, 200, 50, 0, Math.PI * 2);
+      context.fill();
+    }
+
+    // ゲームのメインループ
+    function gameLoop() {
+      moveTarget(); // 的を移動させる
+      draw();
+    }
+
+    // ページが読み込まれた時にゲームを開始する
+    window.onload = function() {
+      init();
+      updateScore();
+      setInterval(gameLoop, 16); // 60FPSの場合は約16msごとに更新
+    };
+  </script>
+</body>
+</html>
